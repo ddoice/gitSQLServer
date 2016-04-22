@@ -18,8 +18,14 @@ BEGIN
 	SET NOCOUNT ON;
 
 	DECLARE @eventData XML = EVENTDATA();
-	-- SELECT @eventData <<DEBUG EVENT DATA
+	SELECT @eventData 
 	-- EXEC [Git].[dbo].[main] @eventDataReceived = @eventData
+	
+	DECLARE @stringXML VARCHAR(MAX) = CAST(@eventData AS VARCHAR(MAX));
+	DECLARE @eCommandText VARCHAR(MAX) = @eventData.value('(/EVENT_INSTANCE/TSQLCommand)[1]',   'NVARCHAR(MAX)');
+	EXEC [Git].[dbo].[saveFiles] @content = @stringXML, @fileName = 'sql.xml', @path = 'C:\Users\casa\Documents\REPO\'
+	EXEC [Git].[dbo].[saveFiles] @content = @eCommandText, @fileName = 'command.sql', @path = 'C:\Users\casa\Documents\REPO\'
+
 END
 GO
 
